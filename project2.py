@@ -35,8 +35,11 @@ def Create():
     time.sleep(1)
     try:
         db = bsddb.btopen(DA_FILE, "w")
+        print("Database exists already")
+        time.sleep(2)
     except:
         print("DB doesn't exist, creating a new one")
+        time.sleep(2)
         db = bsddb.btopen(DA_FILE, "c")
     random.seed(SEED)
 
