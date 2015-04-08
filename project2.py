@@ -12,6 +12,7 @@ db = None
 # FLAGS
 DB_FLAG = 0 # BTree
 #DB_FLAG = 1 # HashTable
+#DB_FLAG = 2 # Indexed File
 
 def get_random():
     return random.randint(0, 63)
@@ -58,7 +59,8 @@ def Create():
             print("\n" + key)            
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
-            db[key] = value
+            if db.has_key(key) == False:
+                db[key] = value
 
     if (DB_FLAG == 1):
         try:
@@ -79,35 +81,40 @@ def Create():
                 value += str(get_random_char())
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
-            db[key] = value
+            if db.has_key(key) == False:
+                db[key] = value
     
 def Key():
-    #Search with given key   
-    print("HERE PROGRAM SEARCHES WITH GIVEN KEY")
-        
+    #Search with given key  
+    os.system('clear')    
     print("Please enter the Key: ")
     db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
-    if (DB_FLAG == 0):
-        if db.has_key(stdin.encode(encoding='UTF-8')) == False:
-            print("%s doesn't exist." %stdin)
-
+    if db.has_key(stdin.encode(encoding='UTF-8')):
+        print("Exists!")
+    else:
+        print("%s doesn't exist." %stdin)
+            
     time.sleep(2)
     
 def Data():
     #search with given data
-    print("HERE PROGRAM SEARCHES WITH GIVEN DATA")
+    os.system('clear')    
+    print("Please enter the Key: ")
+    db = bsddb.btopen(DA_FILE, "r")
+    stdin = input(">>")
+    
     time.sleep(2)
 
 def Range():
     #Search with range of keys
+    os.system('clear')    
     print("HERE PROGRAM SEARCHES A GIVEN RANGE OF KEYS")
     time.sleep(2)
  
 def Destroy():
     #Destroy the database
-    print("HERE WE DESTROY THE DATABASE")
     time.sleep(1)
     
     try:
