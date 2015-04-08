@@ -7,11 +7,11 @@ DA_FILE = "/tmp/nsd_db/my_db"
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 10000
 SEED = 10000000
-db = 0;
+db = None 
 
 # FLAGS
-FLAG = 0 # BTree
-#FLAG = 1 # HashTable
+DB_FLAG = 0 # BTree
+#DB_FLAG = 1 # HashTable
 
 def get_random():
     return random.randint(0, 63)
@@ -34,12 +34,11 @@ def main():
         choice = input(" >>  ")
         exec_menu(choice)
  
- 
 def Create():
     #Where database is created and populated
     print("HERE DATABASE IS CREATED AND POPULATED")
     
-    if (FLAG == 0):
+    if (DB_FLAG == 0):
         try:
             db = bsddb.btopen(DA_FILE, "w")
         except:
@@ -56,15 +55,12 @@ def Create():
             value = ""
             for i in range(vrng):
                 value += str(get_random_char())
+            print("\n" + key)            
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
             db[key] = value
-        try:
-            db.close()
-        except Exception as e:
-            print (e)
 
-    if (FLAG == 1):
+    if (DB_FLAG == 1):
         try:
             db = bsddb.hashopen(DA_FILE, "w")
         except:
@@ -84,14 +80,19 @@ def Create():
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
             db[key] = value
-        try:
-            db.close()
-        except Exception as e:
-            print (e)
     
 def Key():
-    #Search with given key
+    #Search with given key   
     print("HERE PROGRAM SEARCHES WITH GIVEN KEY")
+        
+    print("Please enter the Key: ")
+    db = bsddb.btopen(DA_FILE, "r")
+    stdin = input(">>")
+    
+    if (DB_FLAG == 0):
+        if db.has_key(stdin.encode(encoding='UTF-8')) == False:
+            print("%s doesn't exist." %stdin)
+
     time.sleep(2)
     
 def Data():
@@ -108,7 +109,12 @@ def Destroy():
     #Destroy the database
     print("HERE WE DESTROY THE DATABASE")
     time.sleep(1)
-        
+    
+    try:
+        db.close()
+    except Exception as e:
+        print (e)    
+
 # Back to main menu
 def back():
     main()
