@@ -3,10 +3,16 @@ import random, os, sys, time
 
 #create this directory in tmp before running this program
 DA_FILE = "/tmp/nsd_db/my_db"
+
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 10000
 SEED = 10000000
 db = 0;
+
+# FLAGS
+FLAG = 0 # BTree
+#FLAG = 1 # HashTable
+
 def get_random():
     return random.randint(0, 63)
 def get_random_char():
@@ -32,32 +38,56 @@ def main():
 def Create():
     #Where database is created and populated
     print("HERE DATABASE IS CREATED AND POPULATED")
-    try:
-        db = bsddb.btopen(DA_FILE, "w")
-    except:
-        print("DB doesn't exist, creating a new one")
-        db = bsddb.btopen(DA_FILE, "c")
-    random.seed(SEED)
+    
+    if (FLAG == 0):
+        try:
+            db = bsddb.btopen(DA_FILE, "w")
+        except:
+            print("DB doesn't exist, creating a new one")
+            db = bsddb.btopen(DA_FILE, "c")
+        random.seed(SEED)
+    
+        for index in range(DB_SIZE):
+            krng = 64 + get_random()
+            key = ""
+            for i in range(krng):
+                key += str(get_random_char())
+            vrng = 64 + get_random()
+            value = ""
+            for i in range(vrng):
+                value += str(get_random_char())
+            key = key.encode(encoding='UTF-8')
+            value = value.encode(encoding='UTF-8')
+            db[key] = value
+        try:
+            db.close()
+        except Exception as e:
+            print (e)
 
-    for index in range(DB_SIZE):
-        krng = 64 + get_random()
-        key = ""
-        for i in range(krng):
-            key += str(get_random_char())
-        vrng = 64 + get_random()
-        value = ""
-        for i in range(vrng):
-            value += str(get_random_char())
-        key = key.encode(encoding='UTF-8')
-        value = value.encode(encoding='UTF-8')
-        db[key] = value
-    try:
-        db.close()
-    except Exception as e:
-        print (e)
-
-
-
+    if (FLAG == 1):
+        try:
+            db = bsddb.hashopen(DA_FILE, "w")
+        except:
+            print("DB doesn't exist, creating a new one")
+            db = bsddb.hashopen(DA_FILE, "c")
+        random.seed(SEED)
+    
+        for index in range(DB_SIZE):
+            krng = 64 + get_random()
+            key = ""
+            for i in range(krng):
+                key += str(get_random_char())
+            vrng = 64 + get_random()
+            value = ""
+            for i in range(vrng):
+                value += str(get_random_char())
+            key = key.encode(encoding='UTF-8')
+            value = value.encode(encoding='UTF-8')
+            db[key] = value
+        try:
+            db.close()
+        except Exception as e:
+            print (e)
     
 def Key():
     #Search with given key
