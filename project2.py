@@ -32,14 +32,10 @@ def main():
 def Create():
     #Where database is created and populated
     print("HERE DATABASE IS CREATED AND POPULATED")
-    time.sleep(1)
     try:
         db = bsddb.btopen(DA_FILE, "w")
-        print("Database exists already")
-        time.sleep(2)
     except:
         print("DB doesn't exist, creating a new one")
-        time.sleep(2)
         db = bsddb.btopen(DA_FILE, "c")
     random.seed(SEED)
 
@@ -52,9 +48,6 @@ def Create():
         value = ""
         for i in range(vrng):
             value += str(get_random_char())
-        print (key)
-        print (value)
-        print ("")
         key = key.encode(encoding='UTF-8')
         value = value.encode(encoding='UTF-8')
         db[key] = value
@@ -84,13 +77,8 @@ def Range():
 def Destroy():
     #Destroy the database
     print("HERE WE DESTROY THE DATABASE")
-    time.sleep(2)
-    try:
-        db.close()
-        bsddb.remove("/tmp/nsd_db/my_db")
-    except:
-        print("could not remove")
- 
+    time.sleep(1)
+        
 # Back to main menu
 def back():
     main()
