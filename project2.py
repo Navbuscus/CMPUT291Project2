@@ -21,8 +21,27 @@ def get_random_char():
     return chr(97 + random.randint(0, 25))
 
 def main(argv):
-    print("argument entered was "+argv[0])
-    time.sleep(2)
+    if len(argv) > 1:
+        print("Error: too many args. Please enter one of these (btree, hash, indexfile)")
+        time.sleep(2)
+        sys.exit()
+    elif argv[0] == "btree":
+        DB_FLAG = bsddb.db.DB_BTREE
+        print("btree selected")
+        time.sleep(1)
+    elif argv[0] == "hash":
+        DB_FLAG = bsddb.db.DB_HASH
+        print("hash selected")
+        time.sleep(1)
+    elif argv[0] == "indexfile":
+        DB_FLAG = "INDEX_FILE"
+        print("indexfile selected")
+        time.sleep(1)
+    else:
+        print("Error: incorrect argument. Please enter one of these (btree, hash, indexfile)")
+        time.sleep(2)
+        sys.exit()
+
     main_menu()
 
 def main_menu():
