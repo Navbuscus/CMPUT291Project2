@@ -134,7 +134,6 @@ def Range():
         list.append(cursor.current()[0])
         i=i+1
 
-
     print(list)
     db_1.close()
     time.sleep(1)
