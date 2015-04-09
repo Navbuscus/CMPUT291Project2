@@ -20,7 +20,12 @@ def get_random():
 def get_random_char():
     return chr(97 + random.randint(0, 25))
 
-def main():
+def main(argv):
+    print("argument entered was "+argv[0])
+    time.sleep(2)
+    main_menu()
+
+def main_menu():
     while True:
         os.system('clear')
         
@@ -155,11 +160,6 @@ def Destroy():
     #except Exception as e:
       #  print (e)    
 
- 
-# Back to main menu
-def back():
-    main()
- 
 # Exit program
 def exitProgram():
     Destroy()
@@ -169,7 +169,7 @@ def exitProgram():
 def exec_menu(choice):
     ch = choice.lower()
     if ch == '':
-        menu_actions['main']()
+        menu_actions['main_menu']()
     else:
         try:
             menu_actions[ch]()
@@ -192,7 +192,7 @@ def results(key,value):
     
 # Menu definition
 menu_actions = {
-    'main_menu': main,
+    'main_menu': main_menu,
     '1': Create,
     '2': Key,
     '3': Data,
@@ -202,4 +202,4 @@ menu_actions = {
 }
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
