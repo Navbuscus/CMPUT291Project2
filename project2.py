@@ -2,17 +2,17 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DA_FILE = "/tmp/nsd_db/my_db"
+DB_FILE = "/tmp/nsd_db/my_db"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 10000
 SEED = 10000000
-db = None 
+db_1 = None 
 
 # FLAGS
-DB_FLAG = 0 # BTree
-#DB_FLAG = 1 # HashTable
-#DB_FLAG = 2 # Indexed File
+DB_FLAG = bsddb.db.DB_BTREE # BTree
+#DB_FLAG = bsddb.db.DB_HASH # HashTable
+#DB_FLAG = "INDEX_FILE" # Indexed File
 
 def get_random():
     return random.randint(0, 63)
@@ -38,13 +38,15 @@ def main():
 def Create():
     #Where database is created and populated
     print("HERE DATABASE IS CREATED AND POPULATED")
-    
-    if (DB_FLAG == 0):
+    if (DB_FLAG != "INDEX_FILE"):
         try:
-            db = bsddb.btopen(DA_FILE, "w")
+            db_1 = bsddb.db.DB()
+            db_1.open(DB_FILE,DB_FLAG)
         except:
+            db_1 = bsddb.db.DB()
             print("DB doesn't exist, creating a new one")
-            db = bsddb.btopen(DA_FILE, "c")
+            time.sleep(2)
+            db_1.open(DB_FILE,DB_FLAG,bsddb.db.DB_CREATE)
         random.seed(SEED)
     
         for index in range(DB_SIZE):
@@ -59,50 +61,35 @@ def Create():
             print("\n" + key)            
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
-            if db.has_key(key) == False:
-                db[key] = value
+            if db_1.has_key(key) == False:
+                db_1.put(key, value)
+                
+    #else:
+        #CODE FOR INDEX_FILE
+    db_1.close()
 
-    if (DB_FLAG == 1):
-        try:
-            db = bsddb.hashopen(DA_FILE, "w")
-        except:
-            print("DB doesn't exist, creating a new one")
-            db = bsddb.hashopen(DA_FILE, "c")
-        random.seed(SEED)
-    
-        for index in range(DB_SIZE):
-            krng = 64 + get_random()
-            key = ""
-            for i in range(krng):
-                key += str(get_random_char())
-            vrng = 64 + get_random()
-            value = ""
-            for i in range(vrng):
-                value += str(get_random_char())
-            key = key.encode(encoding='UTF-8')
-            value = value.encode(encoding='UTF-8')
-            if db.has_key(key) == False:
-                db[key] = value
-    
+
+
 def Key():
     #Search with given key  
-    os.system('clear')    
+    os.system('clear')   
+    db_1 = bsddb.db.DB()
+    db_1.open(DB_FILE)
     print("Please enter the Key: ")
-    db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
-    if db.has_key(stdin.encode(encoding='UTF-8')):
+    if db_1.has_key(stdin.encode(encoding='UTF-8')):
         print("Exists!")
     else:
         print("%s doesn't exist." %stdin)
-            
+    db_1.close()    
     time.sleep(2)
     
 def Data():
     #search with given data
     os.system('clear')    
     print("Please enter the Key: ")
-    db = bsddb.btopen(DA_FILE, "r")
+    #db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
     time.sleep(2)
@@ -115,12 +102,20 @@ def Range():
  
 def Destroy():
     #Destroy the database
-    time.sleep(1)
-    
-    try:
-        db.close()
-    except Exception as e:
-        print (e)    
+    print("destroying database")
+    time.sleep(1) 
+   # try:
+       # db_1.close()
+       # db_1.remove()
+       # db_1.dbremove()
+    if os.path.isfile("/tmp/nsd_db/my_db"):
+        print("removing file")
+        os.remove("/tmp/nsd_db/my_db")
+        time.sleep(1)
+    #except Exception as e:
+      #  print (e)    
+
+
 
 # Back to main menu
 def back():
