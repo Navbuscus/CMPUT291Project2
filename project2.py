@@ -5,7 +5,7 @@ import random, os, sys, time
 DB_FILE = "/tmp/nsd_db/my_db"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
-DB_SIZE = 10000
+DB_SIZE = 100
 SEED = 10000000
 db_1 = None 
 
@@ -96,9 +96,23 @@ def Data():
 
 def Range():
     #Search with range of keys
-    os.system('clear')    
-    print("HERE PROGRAM SEARCHES A GIVEN RANGE OF KEYS")
-    time.sleep(2)
+    db_1 = bsddb.db.DB()
+    db_1.open(DB_FILE)
+    os.system('clear') 
+    cursor = db_1.cursor()
+    print("Please enter lower limit key for the range: ")
+    low = input(">> ")
+    print("Please enter upper limit key for the range: ")
+    high = input(">> ")
+    list =[]
+    list.append(cursor.set(low.encode(encoding='UTF-8')))
+    for i in range(10):
+        cursor.set_range(cursor.current()[0])
+        list.append(cursor.current())
+
+    print(list)
+    db_1.close()
+    time.sleep(10)
  
 def Destroy():
     #Destroy the database
@@ -108,9 +122,9 @@ def Destroy():
        # db_1.close()
        # db_1.remove()
        # db_1.dbremove()
-    if os.path.isfile("/tmp/nsd_db/my_db"):
+    if os.path.isfile(DB_FILE):
         print("removing file")
-        os.remove("/tmp/nsd_db/my_db")
+        os.remove(DB_FILE)
         time.sleep(1)
     #except Exception as e:
       #  print (e)    
@@ -137,7 +151,7 @@ def exec_menu(choice):
         except KeyError:
             print ("Invalid selection, please try again.\n")
             time.sleep(1)
-            menu_actions['main']()
+            menu_actions['main_menu']()
     return
  
 # Menu definition
