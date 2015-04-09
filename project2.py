@@ -5,7 +5,7 @@ import random, os, sys, time
 DB_FILE = "/tmp/nsd_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
-DB_SIZE = 100
+DB_SIZE = 1000
 SEED = 10000000
 db_1 = None 
 
@@ -126,14 +126,18 @@ def Range():
     print("Please enter upper limit key for the range: ")
     high = input(">> ")
     list =[]
-    list.append(cursor.set(low.encode(encoding='UTF-8')))
-    for i in range(10):
-        cursor.set_range(cursor.current()[0])
-        list.append(cursor.current())
+    list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
+    i = 0
+
+    while cursor.current()[0].decode(encoding='UTF-8') != high and i<15:
+        cursor.next()
+        list.append(cursor.current()[0])
+        i=i+1
+
 
     print(list)
     db_1.close()
-    time.sleep(10)
+    time.sleep(1)
  
 def Destroy():
     #Destroy the database
