@@ -2,14 +2,13 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DB_FILE = "/tmp/nsd_db/my_db"
+DB_FILE = "/tmp/nsd_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 100
 SEED = 10000000
 db_1 = None 
 
-output = open("answers", 'w')
 
 # FLAGS
 DB_FLAG = bsddb.db.DB_BTREE # BTree
@@ -20,7 +19,6 @@ def get_random():
     return random.randint(0, 63)
 def get_random_char():
     return chr(97 + random.randint(0, 25))
-
 
 def main():
     while True:
@@ -39,14 +37,15 @@ def main():
  
 def Create():
     #Where database is created and populated
-    print("HERE DATABASE IS CREATED AND POPULATED")
+    os.system('clear')
+    print("Creating & Populating Database ...")
     if (DB_FLAG != "INDEX_FILE"):
         try:
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG)
         except:
             db_1 = bsddb.db.DB()
-            print("DB doesn't exist, creating a new one")
+            print("Error: Database does not exist. Creating a new one.")
             time.sleep(2)
             db_1.open(DB_FILE,DB_FLAG,bsddb.db.DB_CREATE)
         random.seed(SEED)
@@ -70,13 +69,12 @@ def Create():
                 db_1.put(key, value)
         
         end_time = time.time()
-        results(records, (end_time-start_time))
+        performance(records, (end_time-start_time))
         time.sleep(3)
        
     #else:
         #CODE FOR INDEX_FILE
     db_1.close()
-
 
 
 def Key():
@@ -92,9 +90,10 @@ def Key():
 
     if db_1.has_key(stdin.encode(encoding='UTF-8')):
         records += 1
-    
+        results(stdin,db_1.get(stdin.encode(encoding='UTF-8')).decode(encoding='UTF-8'))        
+        
     end_time = time.time()
-    results(records, (end_time-start_time))
+    performance(records, (end_time-start_time))
     time.sleep(3)    
     
     db_1.close()    
@@ -106,6 +105,13 @@ def Data():
     print("Please enter the Key: ")
     #db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
+    
+    db_1 = bsddb.db.DB()
+    db_1.open(DB_FILE)
+    
+    for key, value in db_1.iteritems():
+        if (value.encode(encoding='UTF-8') == stdin):
+            results(key,stdin)
     
     time.sleep(2)
 
@@ -131,21 +137,22 @@ def Range():
  
 def Destroy():
     #Destroy the database
-    print("destroying database")
+    os.system('clear')
+    
+    print("Destroying Database ...")
     time.sleep(1) 
    # try:
        # db_1.close()
        # db_1.remove()
        # db_1.dbremove()
     if os.path.isfile(DB_FILE):
-        print("removing file")
+        print("Removing file")
         os.remove(DB_FILE)
         time.sleep(1)
     #except Exception as e:
       #  print (e)    
 
-
-
+ 
 # Back to main menu
 def back():
     main()
@@ -169,11 +176,17 @@ def exec_menu(choice):
             menu_actions['main_menu']()
     return
 
-# 
-def results(records,time):
+def performance(records,time):
     print("Number of records retrieved: %d"%records)
-    print("Total execution time: %fms"%time)
- 
+    print("Total execution time: %f ms"%(1000000*time))
+
+def results(key,value):
+    output = open("answers", 'wt')    
+    output.write(key)
+    output.write("\n"+value)
+    output.write("\n")
+    output.close()    
+    
 # Menu definition
 menu_actions = {
     'main_menu': main,
