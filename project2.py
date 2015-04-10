@@ -45,6 +45,7 @@ def main(argv):
     main_menu()
 
 def main_menu():
+        
     while True:
         os.system('clear')
         
@@ -146,14 +147,14 @@ def Data():
     print("Please enter the Data: ")
     stdin = input(">>")
     
-    db_1 = bsddb.db.DB()
-    db_1.open(DB_FILE)
+    db_1 = bsddb.btopen(DB_FILE, "r")
+    
+    #db_1 = bsddb.db.DB()
+    #db_1.open(DB_FILE)
+        
     for key, value in db_1.iteritems():
-        if (value.encode(encoding='UTF-8') == stdin):
-            results(key,stdin)
-
-    #time.sleep(2)
-
+        if (value == stdin.encode(encoding='UTF-8')):
+            results(key.decode(encoding='UTF-8')
 def Range():
     #Search with range of keys
     db_1 = bsddb.db.DB()
@@ -231,6 +232,10 @@ def results(key,value):
     output.write("\n"+value)
     output.write("\n")
     output.close()    
+ 
+def deleteContent(fName):
+    with open(fName, "w"):
+        pass
     
 # Menu definition
 menu_actions = {
