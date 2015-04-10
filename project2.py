@@ -2,8 +2,8 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DB_FILE = "/tmp/nsd_db/my_db"
-DB_FILE2 = "/tmp/nsd_db/my_db2"
+DB_FILE = "/tmp/ajwu_db/my_db"
+DB_FILE2 = "/tmp/ajwu_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 1000
@@ -205,36 +205,42 @@ def Range():
     db_1.open(DB_FILE)
     os.system('clear') 
     cursor = db_1.cursor()
+    
     print("Please enter lower limit key for the range: ")
     low = input(">> ")
     print("Please enter upper limit key for the range: ")
     high = input(">> ")
+    
+    if (keyExists(db_1,low,high) and not (low == high)):
      
-    list =[]
-    i = 0
-    
-    records = 0
-    start_time = time.time()     
-    
-    # Hash 
-    if (DB_FLAG == HASH):
-        while (cursor.next()):
-            if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
-                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
+        list =[]
+        i = 0
+        
+        records = 0
+        start_time = time.time()     
+        
+        # Hash 
+        if (DB_FLAG == HASH):
+            while (cursor.next()):
+                if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
+                    results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
+                    #list.append(cursor.current()[0])
+                    records += 1 
+        
+        # B-Tree & IndexedFile    
+        else:
+            list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
+            while cursor.next()[0].decode(encoding='UTF-8') != high:
+                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
                 #list.append(cursor.current()[0])
                 records += 1 
-    
-    # B-Tree & IndexedFile    
+        
+        end_time = time.time()
+        performance(records, (end_time-start_time))
+        time.sleep(2)        
+     
     else:
-        list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
-        while cursor.next()[0].decode(encoding='UTF-8') != high:
-            results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
-            #list.append(cursor.current()[0])
-            records += 1 
-            
-    end_time = time.time()
-    performance(records, (end_time-start_time))
-    time.sleep(2)
+        print("Error: Unable to execute range search. One of your Keys does not exists in the database. Please try again.")
     
     db_1.close() 
     
@@ -292,6 +298,11 @@ def results(key,value):
 def deleteContent(fName):
     with open(fName, "w"):
         pass
+
+def keyExists(db, key1,key2):
+    if (db.has_key(key1.encode(encoding='UTF-8')) and db.has_key(key2.encode(encoding='UTF-8'))):
+        return True
+    return False
     
 # Menu definition
 menu_actions = {
