@@ -40,14 +40,16 @@ def main(argv):
     else:
         print("Error: incorrect argument. Please enter one of these (btree, hash, indexfile)")
         time.sleep(2)
-        sys.exit()
-    deleteContent("answers")
+        sys.exit()        
+    
+    deleteContent("answers")    
+    
     main_menu()
 
-def main_menu():    
+def main_menu():
     while True:
-        os.system('clear')
         
+        os.system('clear')
         print ("Welcome!")
         print ("Please choose the menu you want to start:")
         print ("1. Create and populate a database")
@@ -66,9 +68,9 @@ def Create():
     try:
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,BTREE)
+            db_1.open(DB_FILE,"db1",BTREE)
             db_2 = bsddb.db.DB()
-            db_2.open(DB_FILE,BTREE)
+            db_2.open(DB_FILE,"db2",BTREE)
         else:
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG)
@@ -77,9 +79,9 @@ def Create():
         time.sleep(2)
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
+            db_1.open(DB_FILE,"db1",BTREE,bsddb.db.DB_CREATE)
             db_2 = bsddb.db.DB()
-            db_2.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
+            db_2.open(DB_FILE,"db1",BTREE,bsddb.db.DB_CREATE)
         else:
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG,bsddb.db.DB_CREATE)
@@ -120,7 +122,7 @@ def Key():
     os.system('clear')  
     try:
         db_1 = bsddb.db.DB()
-        db_1.open(DB_FILE)
+        db_1.open(DB_FILE,"db1")
     except:
         print("Error: no database found. please create database first")
         return
@@ -147,6 +149,9 @@ def Data():
     print("Please enter the Data: ")
     stdin = input(">>")
     if (DB_FLAG == "INDEX_FILE"):
+        try:
+            db_2 = bsddb.db.DB()
+            db_2.open(DB_FILE,"db2")
          records = 0
          start_time = time.time()    
 
@@ -159,22 +164,30 @@ def Data():
          time.sleep(2)
          return
     elif(DB_FLAG == HASH):
-        db_1 = bsddb.hashopen(DB_FILE, "r")
+        try:
+            db_1 = bsddb.hashopen(DB_FILE, "r")
+        except:
+            print("Error: no database found. please create database first")
+            return
     elif(DB_FLAG == BTREE):
-        db_1 = bsddb.btopen(DB_FILE, "r")
-    
-    #db_1 = bsddb.db.DB()
-    #db_1.open(DB_FILE)
-    
+        try:
+            db_1 = bsddb.btopen(DB_FILE, "r")
+        except:
+            print("Error: no database found. please create database first")
+            return
 
-     records = 0
-    start_time = time.time()    
+    records = 0
+    start_time = time.time()  
+    
     for key, value in db_1.iteritems():
         if (value == stdin.encode(encoding='UTF-8')):
             results(key.decode(encoding='UTF-8'),stdin)
             records += 1
     end_time = time.time()
-    performance(records,(end_time-start_time)
+    performance(records, (end_time-start_time))
+    time.sleep(2)
+    
+    db_1.close() 
 
 def Range():
     #Search with range of keys
@@ -190,11 +203,15 @@ def Range():
     list =[]
     i = 0
     
+    records = 0
+    start_time = time.time()     
+    
     # Hash 
     if (DB_FLAG == HASH):
         while (cursor.next()):
             if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
                 list.append(cursor.current()[0])
+                records += 1 
     
     # B-Tree & IndexedFile    
     else:
@@ -202,9 +219,15 @@ def Range():
         while cursor.current()[0].decode(encoding='UTF-8') != high:
             cursor.next()
             list.append(cursor.current()[0])
-
+            records += 1 
+            
+    end_time = time.time()
+    performance(records, (end_time-start_time))
+    time.sleep(2)
+    
+    db_1.close() 
+    
     print(list)
-    db_1.close()
     time.sleep(1)
  
 def Destroy():
