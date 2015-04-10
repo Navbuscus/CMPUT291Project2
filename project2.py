@@ -146,17 +146,35 @@ def Data():
     os.system('clear')    
     print("Please enter the Data: ")
     stdin = input(">>")
-    if(DB_FLAG == HASH):
+    if (DB_FLAG == "INDEX_FILE"):
+         records = 0
+         start_time = time.time()    
+
+         if db_2.has_key(stdin.encode(encoding='UTF-8')):
+             records += 1
+             results(stdin,db_2.get(stdin.encode(encoding='UTF-8')).decode(encoding='UTF-8'))        
+        
+             end_time = time.time()
+             performance(records, (end_time-start_time))
+         time.sleep(2)
+         return
+    elif(DB_FLAG == HASH):
         db_1 = bsddb.hashopen(DB_FILE, "r")
     elif(DB_FLAG == BTREE):
         db_1 = bsddb.btopen(DB_FILE, "r")
     
     #db_1 = bsddb.db.DB()
     #db_1.open(DB_FILE)
-        
+    
+
+     records = 0
+    start_time = time.time()    
     for key, value in db_1.iteritems():
         if (value == stdin.encode(encoding='UTF-8')):
             results(key.decode(encoding='UTF-8'),stdin)
+            records += 1
+    end_time = time.time()
+    performance(records,(end_time-start_time)
 
 def Range():
     #Search with range of keys
