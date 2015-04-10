@@ -45,7 +45,7 @@ def main(argv):
     main_menu()
 
 def main_menu():
-        
+    deleteContent("answers")    
     while True:
         os.system('clear')
         
@@ -98,7 +98,8 @@ def Create():
         value = ""
         for i in range(vrng):
             value += str(get_random_char())
-        print("\n" + key)            
+        print("key: " + key)
+        print("value: "+ value) 
         key = key.encode(encoding='UTF-8')
         value = value.encode(encoding='UTF-8')
         if DB_FLAG == "INDEX_FILE":
@@ -146,15 +147,18 @@ def Data():
     os.system('clear')    
     print("Please enter the Data: ")
     stdin = input(">>")
-    
-    db_1 = bsddb.btopen(DB_FILE, "r")
+    if(DB_FLAG == HASH):
+        db_1 = bsddb.hashopen(DB_FILE, "r")
+    elif(DB_FLAG == BTREE):
+        db_1 = bsddb.btopen(DB_FILE, "r")
     
     #db_1 = bsddb.db.DB()
     #db_1.open(DB_FILE)
         
     for key, value in db_1.iteritems():
         if (value == stdin.encode(encoding='UTF-8')):
-            results(key.decode(encoding='UTF-8')
+            results(key.decode(encoding='UTF-8'),stdin)
+
 def Range():
     #Search with range of keys
     db_1 = bsddb.db.DB()
