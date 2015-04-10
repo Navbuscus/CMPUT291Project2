@@ -63,43 +63,54 @@ def Create():
     #Where database is created and populated
     os.system('clear')
     print("Creating & Populating Database ...")
-    if (DB_FLAG != "INDEX_FILE"):
-        try:
+    try:
+        if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,DB_FLAG)
-        except:
+            db_1.open(DB_FILE,BTREE)
+            db_2 = bsddb.db.DB()
+            db_2.open(DB_FILE,BTREE)
+        else:
             db_1 = bsddb.db.DB()
-            print("Error: Database does not exist. Creating a new one.")
-            time.sleep(2)
+            db_1.open(DB_FILE,DB_FLAG
+    except:
+        print("Error: Database does not exist. Creating a new one.")
+        time.sleep()
+        if DB_FLAG == "INDEX_FILE"
+            db_1 = bsddb.db.DB()
+            db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
+            db_2 = bsddb.db.DB()
+            db_2.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
+        else:
+            db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG,bsddb.db.DB_CREATE)
-        random.seed(SEED)
+    random.seed(SEED)
     
-        records = 0
-        start_time = time.time()
-        
-        for index in range(DB_SIZE):
-            krng = 64 + get_random()
-            key = ""
-            for i in range(krng):
-                key += str(get_random_char())
-            vrng = 64 + get_random()
-            value = ""
-            for i in range(vrng):
-                value += str(get_random_char())
-            print("\n" + value)            
-            key = key.encode(encoding='UTF-8')
-            value = value.encode(encoding='UTF-8')
+    records = 0
+    start_time = time.time()
+    
+    for index in range(DB_SIZE):
+        krng = 64 + get_random()
+        key = ""
+        for i in range(krng):
+            key += str(get_random_char())
+        vrng = 64 + get_random()
+        value = ""
+        for i in range(vrng):
+            value += str(get_random_char())
+        print("\n" + value)            
+        key = key.encode(encoding='UTF-8')
+        value = value.encode(encoding='UTF-8')
+        if DB_FLAG == "INDEX_FILE"
+            if db_1.has_key(key) == False:
+                db_1.put(key, value)
+                db_2.put(value,key)
+        else:
             if db_1.has_key(key) == False:
                 db_1.put(key, value)
         
-        end_time = time.time()
-        performance(records, (end_time-start_time))
-        time.sleep(3)
-       
-    else:
-        #CODE FOR INDEX_FILE
-        print("Index File not implemented yet please restart program")
-        time.sleep(2)
+    end_time = time.time()
+    performance(records, (end_time-start_time))
+    time.sleep(3)   
     db_1.close()
 
 
