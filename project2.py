@@ -11,9 +11,9 @@ db_1 = None
 
 
 # FLAGS
-DB_FLAG = bsddb.db.DB_BTREE # BTree
-#DB_FLAG = bsddb.db.DB_HASH # HashTable
-#DB_FLAG = "INDEX_FILE" # Indexed File
+BTREE =  bsddb.db.DB_BTREE # BTree
+HASH = bsddb.db.DB_HASH
+DB_FLAG = BTREE
 
 def get_random():
     return random.randint(0, 63)
@@ -26,11 +26,11 @@ def main(argv):
         time.sleep(2)
         sys.exit()
     elif argv[0] == "btree":
-        DB_FLAG = bsddb.db.DB_BTREE
+        DB_FLAG = BTREE
         print("btree selected")
         time.sleep(1)
     elif argv[0] == "hash":
-        DB_FLAG = bsddb.db.DB_HASH
+        DB_FLAG = HASH
         print("hash selected")
         time.sleep(1)
     elif argv[0] == "indexfile":
@@ -96,16 +96,23 @@ def Create():
         performance(records, (end_time-start_time))
         time.sleep(3)
        
-    #else:
+    else:
         #CODE FOR INDEX_FILE
+        print("Index File not implemented yet please restart program")
+        time.sleep(2)
     db_1.close()
 
 
 def Key():
     #Search with given key  
-    os.system('clear')   
-    db_1 = bsddb.db.DB()
-    db_1.open(DB_FILE)
+    os.system('clear')  
+    try:
+        db_1 = bsddb.db.DB()
+        db_1.open(DB_FILE)
+    except:
+        print("Error: no database found. please create database first")
+        return
+
     print("Please enter the Key: ")
     stdin = input(">>")
     
