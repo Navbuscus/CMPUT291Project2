@@ -45,6 +45,7 @@ def main(argv):
     main_menu()
 
 def main_menu():
+        
     while True:
         os.system('clear')
         
@@ -74,7 +75,7 @@ def Create():
             db_1.open(DB_FILE,DB_FLAG)
     except:
         print("Error: Database does not exist. Creating a new one.")
-        time.sleep()
+        time.sleep(2)
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
@@ -147,12 +148,15 @@ def Data():
     #db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
-    db_1 = bsddb.db.DB()
-    db_1.open(DB_FILE)
+    
+    db_1 = bsddb.btopen(DB_FILE, "r")
+    
+    #db_1 = bsddb.db.DB()
+    #db_1.open(DB_FILE)
         
     for key, value in db_1.iteritems():
-        if (value.encode(encoding='UTF-8') == stdin):
-            results(key,stdin)
+        if (value == stdin.encode(encoding='UTF-8')):
+            results(key.decode(encoding='UTF-8'),stdin)
     
     #time.sleep(2)
 
@@ -237,6 +241,10 @@ def results(key,value):
     output.write("\n"+value)
     output.write("\n")
     output.close()    
+ 
+def deleteContent(fName):
+    with open(fName, "w"):
+        pass
     
 # Menu definition
 menu_actions = {
