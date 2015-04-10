@@ -41,6 +41,7 @@ def main(argv):
         print("Error: incorrect argument. Please enter one of these (btree, hash, indexfile)")
         time.sleep(2)
         sys.exit()
+<<<<<<< HEAD
         
     
     deleteContent("answers")    
@@ -48,6 +49,12 @@ def main(argv):
     main_menu()
 
 def main_menu():
+=======
+    deleteContent("answers")
+    main_menu()
+
+def main_menu():    
+>>>>>>> 04fd72c62b5657ebda71d00cd98df7c1f203480a
     while True:
         
         os.system('clear')
@@ -254,6 +261,7 @@ def results(key,value):
     output = open("answers", 'a')    
     output.write(key)
     output.write("\n"+value)
+    output.write("\n")
     output.write("\n")
     output.close()    
  
