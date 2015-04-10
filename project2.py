@@ -123,7 +123,7 @@ def Key():
     os.system('clear')  
     try:
         db_1 = bsddb.db.DB()
-        db_1.open(DB_FILE,"db1")
+        db_1.open(DB_FILE)
     except:
         print("Error: no database found. please create database first")
         return
