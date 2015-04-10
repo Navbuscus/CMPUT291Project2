@@ -41,11 +41,10 @@ def main(argv):
         print("Error: incorrect argument. Please enter one of these (btree, hash, indexfile)")
         time.sleep(2)
         sys.exit()
-
+    deleteContent("answers")
     main_menu()
 
-def main_menu():
-    deleteContent("answers")    
+def main_menu():    
     while True:
         os.system('clear')
         
@@ -231,9 +230,10 @@ def performance(records,time):
     print("Total execution time: %f ms"%(1000000*time))
 
 def results(key,value):
-    output = open("answers", 'wt')    
+    output = open("answers", 'a')    
     output.write(key)
     output.write("\n"+value)
+    output.write("\n")
     output.write("\n")
     output.close()    
  
