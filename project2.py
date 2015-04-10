@@ -3,6 +3,7 @@ import random, os, sys, time
 
 #create this directory in tmp before running this program
 DB_FILE = "/tmp/nsd_db/my_db"
+DB_FILE2 = "/tmp/nsd_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 1000
@@ -68,9 +69,9 @@ def Create():
     try:
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,"db1",BTREE)
+            db_1.open(DB_FILE,BTREE)
             db_2 = bsddb.db.DB()
-            db_2.open(DB_FILE,"db2",BTREE)
+            db_2.open(DB_FILE2,BTREE)
         else:
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG)
@@ -79,9 +80,9 @@ def Create():
         time.sleep(2)
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,"db1",BTREE,bsddb.db.DB_CREATE)
+            db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
             db_2 = bsddb.db.DB()
-            db_2.open(DB_FILE,"db1",BTREE,bsddb.db.DB_CREATE)
+            db_2.open(DB_FILE2,BTREE,bsddb.db.DB_CREATE)
         else:
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,DB_FLAG,bsddb.db.DB_CREATE)
@@ -151,7 +152,10 @@ def Data():
     if (DB_FLAG == "INDEX_FILE"):
         try:
             db_2 = bsddb.db.DB()
-            db_2.open(DB_FILE,"db2")
+            db_2.open(DB_FILE2)
+        except:
+            print("Error: no database found. please create database first")
+            return
          records = 0
          start_time = time.time()    
 
@@ -162,6 +166,7 @@ def Data():
              end_time = time.time()
              performance(records, (end_time-start_time))
          time.sleep(2)
+         db_2.close()
          return
     elif(DB_FLAG == HASH):
         try:
