@@ -228,7 +228,6 @@ def Range():
             while (cursor.next()):
                 if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
                     results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
-                    #list.append(cursor.current()[0])
                     records += 1 
         
         # B-Tree & IndexedFile    
