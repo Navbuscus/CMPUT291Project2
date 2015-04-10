@@ -41,14 +41,16 @@ def main(argv):
         print("Error: incorrect argument. Please enter one of these (btree, hash, indexfile)")
         time.sleep(2)
         sys.exit()
-
+        
+    
+    deleteContent("answers")    
+    
     main_menu()
 
 def main_menu():
-    deleteContent("answers")    
     while True:
-        os.system('clear')
         
+        os.system('clear')
         print ("Welcome!")
         print ("Please choose the menu you want to start:")
         print ("1. Create and populate a database")
@@ -147,17 +149,25 @@ def Data():
     os.system('clear')    
     print("Please enter the Data: ")
     stdin = input(">>")
+
     if(DB_FLAG == HASH):
         db_1 = bsddb.hashopen(DB_FILE, "r")
     elif(DB_FLAG == BTREE):
         db_1 = bsddb.btopen(DB_FILE, "r")
     
-    #db_1 = bsddb.db.DB()
-    #db_1.open(DB_FILE)
-        
+    records = 0
+    start_time = time.time()  
+    
     for key, value in db_1.iteritems():
         if (value == stdin.encode(encoding='UTF-8')):
             results(key.decode(encoding='UTF-8'),stdin)
+            records += 1
+
+    end_time = time.time()
+    performance(records, (end_time-start_time))
+    time.sleep(2)
+    
+    db_1.close() 
 
 def Range():
     #Search with range of keys
@@ -173,11 +183,15 @@ def Range():
     list =[]
     i = 0
     
+    records = 0
+    start_time = time.time()     
+    
     # Hash 
     if (DB_FLAG == HASH):
         while (cursor.next()):
             if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
                 list.append(cursor.current()[0])
+                records += 1 
     
     # B-Tree & IndexedFile    
     else:
@@ -185,9 +199,15 @@ def Range():
         while cursor.current()[0].decode(encoding='UTF-8') != high:
             cursor.next()
             list.append(cursor.current()[0])
-
+            records += 1 
+            
+    end_time = time.time()
+    performance(records, (end_time-start_time))
+    time.sleep(2)
+    
+    db_1.close() 
+    
     print(list)
-    db_1.close()
     time.sleep(1)
  
 def Destroy():
@@ -231,7 +251,7 @@ def performance(records,time):
     print("Total execution time: %f ms"%(1000000*time))
 
 def results(key,value):
-    output = open("answers", 'wt')    
+    output = open("answers", 'a')    
     output.write(key)
     output.write("\n"+value)
     output.write("\n")
