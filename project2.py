@@ -71,11 +71,11 @@ def Create():
             db_2.open(DB_FILE,BTREE)
         else:
             db_1 = bsddb.db.DB()
-            db_1.open(DB_FILE,DB_FLAG
+            db_1.open(DB_FILE,DB_FLAG)
     except:
         print("Error: Database does not exist. Creating a new one.")
         time.sleep()
-        if DB_FLAG == "INDEX_FILE"
+        if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
             db_2 = bsddb.db.DB()
@@ -100,7 +100,7 @@ def Create():
         print("\n" + value)            
         key = key.encode(encoding='UTF-8')
         value = value.encode(encoding='UTF-8')
-        if DB_FLAG == "INDEX_FILE"
+        if DB_FLAG == "INDEX_FILE":
             if db_1.has_key(key) == False:
                 db_1.put(key, value)
                 db_2.put(value,key)
