@@ -149,6 +149,7 @@ def Data():
     os.system('clear')    
     print("Please enter the Data: ")
     stdin = input(">>")
+    
     if (DB_FLAG == "INDEX_FILE"):
         try:
             db_2 = bsddb.db.DB()
@@ -156,18 +157,22 @@ def Data():
         except:
             print("Error: no database found. please create database first")
             return
-         records = 0
-         start_time = time.time()    
-
-         if db_2.has_key(stdin.encode(encoding='UTF-8')):
-             records += 1
-             results(stdin,db_2.get(stdin.encode(encoding='UTF-8')).decode(encoding='UTF-8'))        
         
-             end_time = time.time()
-             performance(records, (end_time-start_time))
-         time.sleep(2)
-         db_2.close()
-         return
+        records = 0
+        start_time = time.time()    
+
+        if db_2.has_key(stdin.encode(encoding='UTF-8')):
+            records += 1
+            results(stdin,db_2.get(stdin.encode(encoding='UTF-8')).decode(encoding='UTF-8'))        
+        
+        end_time = time.time()
+        performance(records, (end_time-start_time))
+        
+        time.sleep(2)
+        db_2.close()
+
+        return
+    
     elif(DB_FLAG == HASH):
         try:
             db_1 = bsddb.hashopen(DB_FILE, "r")
