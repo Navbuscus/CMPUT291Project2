@@ -2,7 +2,7 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DB_FILE = "/tmp/ajwu_db/my_db2"
+DB_FILE = "/tmp/nsd_db/my_db"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 1000
@@ -74,7 +74,7 @@ def Create():
             db_1.open(DB_FILE,DB_FLAG)
     except:
         print("Error: Database does not exist. Creating a new one.")
-        time.sleep()
+        time.sleep(2)
         if DB_FLAG == "INDEX_FILE":
             db_1 = bsddb.db.DB()
             db_1.open(DB_FILE,BTREE,bsddb.db.DB_CREATE)
@@ -97,7 +97,7 @@ def Create():
         value = ""
         for i in range(vrng):
             value += str(get_random_char())
-        print("\n" + value)            
+        print("\n" + key)            
         key = key.encode(encoding='UTF-8')
         value = value.encode(encoding='UTF-8')
         if DB_FLAG == "INDEX_FILE":
@@ -144,16 +144,14 @@ def Data():
     #search with given data
     os.system('clear')    
     print("Please enter the Data: ")
-    #db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
     db_1 = bsddb.db.DB()
     db_1.open(DB_FILE)
-        
     for key, value in db_1.iteritems():
         if (value.encode(encoding='UTF-8') == stdin):
             results(key,stdin)
-    
+
     #time.sleep(2)
 
 def Range():
@@ -171,21 +169,17 @@ def Range():
     i = 0
     
     # Hash 
-    if (DB_FLAG == bsddb.db.DB_HASH):
-        cursor.first()
-        while (i < DB_SIZE):
-            if (cursor.current()[0].decode(encoding='UTF-8') >= low) or (cursor.current()[0].decode(encoding='UTF-8') <= high):
+    if (DB_FLAG == HASH):
+        while (cursor.next()):
+            if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
                 list.append(cursor.current()[0])
-            cursor.next()
-            i+=1 
     
     # B-Tree & IndexedFile    
     else:
         list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
-        while cursor.current()[0].decode(encoding='UTF-8') != high and i<15:
+        while cursor.current()[0].decode(encoding='UTF-8') != high:
             cursor.next()
             list.append(cursor.current()[0])
-            i+=1
 
     print(list)
     db_1.close()
