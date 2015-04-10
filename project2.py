@@ -2,7 +2,7 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DB_FILE = "/tmp/nsd_db/my_db"
+DB_FILE = "/tmp/ajwu_db/my_db"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 1000
@@ -189,15 +189,16 @@ def Range():
     if (DB_FLAG == HASH):
         while (cursor.next()):
             if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
-                list.append(cursor.current()[0])
+                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
+                #list.append(cursor.current()[0])
                 records += 1 
     
     # B-Tree & IndexedFile    
     else:
         list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
-        while cursor.current()[0].decode(encoding='UTF-8') != high:
-            cursor.next()
-            list.append(cursor.current()[0])
+        while cursor.next()[0].decode(encoding='UTF-8') != high:
+            results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
+            #list.append(cursor.current()[0])
             records += 1 
             
     end_time = time.time()
@@ -206,8 +207,8 @@ def Range():
     
     db_1.close() 
     
-    print(list)
-    time.sleep(1)
+    #print(list)
+    time.sleep(2)
  
 def Destroy():
     #Destroy the database
