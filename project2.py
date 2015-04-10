@@ -6,7 +6,7 @@ DB_FILE = "/tmp/ajwu_db/my_db"
 DB_FILE2 = "/tmp/ajwu_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
-DB_SIZE = 1000
+DB_SIZE = 100000
 SEED = 10000000
 db_1 = None 
 
@@ -215,8 +215,7 @@ def Range():
     print("Please enter upper limit key for the range: ")
     high = input(">> ")
     
-<<<<<<< HEAD
-    if (keyExists(db_1,low,high) and not (low == high)):
+    if (keyExists(db_1,low,high) and not (low >= high)):
      
         list =[]
         i = 0
@@ -236,38 +235,15 @@ def Range():
         else:
             list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
             while cursor.next()[0].decode(encoding='UTF-8') != high:
-                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
-                #list.append(cursor.current()[0])
-=======
-    records = 0
-    start_time = time.time()     
-    
-    # Hash 
-    if (DB_FLAG == HASH):
-        while (cursor.next()):
-            if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
-                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
->>>>>>> d0fce62e8a08add0a09beb2f117484a9c966b007
-                records += 1 
-        
+                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))   
+                records += 1
+     
         end_time = time.time()
         performance(records, (end_time-start_time))
         time.sleep(2)        
      
     else:
-<<<<<<< HEAD
-        print("Error: Unable to execute range search. One of your Keys does not exists in the database. Please try again.")
-=======
-        list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
-        while cursor.next()[0].decode(encoding='UTF-8') != high:
-            results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
-
-            records += 1 
-            
-    end_time = time.time()
-    performance(records, (end_time-start_time))
-    time.sleep(2)
->>>>>>> d0fce62e8a08add0a09beb2f117484a9c966b007
+        print("Error: Unable to execute range search. Please try again.")
     
     db_1.close() 
     
@@ -309,7 +285,7 @@ def exec_menu(choice):
 
 def performance(records,time):
     print("Number of records retrieved: %d"%records)
-    print("Total execution time: %f ms"%(1000000*time))
+    print("Total execution time: %f microseconds"%(1000000*time))
 
 def results(key,value):
     output = open("answers", 'a')    
