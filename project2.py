@@ -2,7 +2,7 @@ import bsddb3 as bsddb
 import random, os, sys, time 
 
 #create this directory in tmp before running this program
-DB_FILE = "/tmp/nsd_db/my_db2"
+DB_FILE = "/tmp/ajwu_db/my_db2"
 
 #ten thousand for now but needs to be one hundred thousand to hand in
 DB_SIZE = 1000
@@ -86,7 +86,7 @@ def Create():
             value = ""
             for i in range(vrng):
                 value += str(get_random_char())
-            print("\n" + key)            
+            print("\n" + value)            
             key = key.encode(encoding='UTF-8')
             value = value.encode(encoding='UTF-8')
             if db_1.has_key(key) == False:
@@ -118,26 +118,25 @@ def Key():
         
     end_time = time.time()
     performance(records, (end_time-start_time))
-    time.sleep(3)    
+    time.sleep(2)
     
     db_1.close()    
-    time.sleep(2)
     
 def Data():
     #search with given data
     os.system('clear')    
-    print("Please enter the Key: ")
+    print("Please enter the Data: ")
     #db = bsddb.btopen(DA_FILE, "r")
     stdin = input(">>")
     
     db_1 = bsddb.db.DB()
     db_1.open(DB_FILE)
-    
+        
     for key, value in db_1.iteritems():
         if (value.encode(encoding='UTF-8') == stdin):
             results(key,stdin)
     
-    time.sleep(2)
+    #time.sleep(2)
 
 def Range():
     #Search with range of keys
