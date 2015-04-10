@@ -1,2 +1,3 @@
 #!/bin/bash
+mkdir /tmp/nsd_db
 python3 project2.py $1

@@ -201,8 +201,12 @@ def Data():
 
 def Range():
     #Search with range of keys
-    db_1 = bsddb.db.DB()
-    db_1.open(DB_FILE)
+    try:
+        db_1 = bsddb.db.DB()
+        db_1.open(DB_FILE)
+    except:
+        print("Error: no database found. please create database first")
+        return
     os.system('clear') 
     cursor = db_1.cursor()
     
@@ -211,6 +215,7 @@ def Range():
     print("Please enter upper limit key for the range: ")
     high = input(">> ")
     
+<<<<<<< HEAD
     if (keyExists(db_1,low,high) and not (low == high)):
      
         list =[]
@@ -233,6 +238,16 @@ def Range():
             while cursor.next()[0].decode(encoding='UTF-8') != high:
                 results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
                 #list.append(cursor.current()[0])
+=======
+    records = 0
+    start_time = time.time()     
+    
+    # Hash 
+    if (DB_FLAG == HASH):
+        while (cursor.next()):
+            if (cursor.current()[0].decode(encoding='UTF-8') >= low) and (cursor.current()[0].decode(encoding='UTF-8') <= high):
+                results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))
+>>>>>>> d0fce62e8a08add0a09beb2f117484a9c966b007
                 records += 1 
         
         end_time = time.time()
@@ -240,7 +255,19 @@ def Range():
         time.sleep(2)        
      
     else:
+<<<<<<< HEAD
         print("Error: Unable to execute range search. One of your Keys does not exists in the database. Please try again.")
+=======
+        list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
+        while cursor.next()[0].decode(encoding='UTF-8') != high:
+            results(cursor.current()[0].decode(encoding='UTF-8'),cursor.current()[1].decode(encoding='UTF-8'))            
+
+            records += 1 
+            
+    end_time = time.time()
+    performance(records, (end_time-start_time))
+    time.sleep(2)
+>>>>>>> d0fce62e8a08add0a09beb2f117484a9c966b007
     
     db_1.close() 
     
@@ -253,16 +280,13 @@ def Destroy():
     
     print("Destroying Database ...")
     time.sleep(1) 
-   # try:
-       # db_1.close()
-       # db_1.remove()
-       # db_1.dbremove()
+
     if os.path.isfile(DB_FILE):
         print("Removing file")
         os.remove(DB_FILE)
-        time.sleep(1)
-    #except Exception as e:
-      #  print (e)    
+    if os.path.isfile(DB_FILE2):
+        os.remove(DB_FILE2)
+    
 
 # Exit program
 def exitProgram():
