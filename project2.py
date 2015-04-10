@@ -148,14 +148,26 @@ def Range():
     low = input(">> ")
     print("Please enter upper limit key for the range: ")
     high = input(">> ")
+     
     list =[]
-    list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
     i = 0
-
-    while cursor.current()[0].decode(encoding='UTF-8') != high and i<15:
-        cursor.next()
-        list.append(cursor.current()[0])
-        i=i+1
+    
+    # Hash 
+    if (DB_FLAG == bsddb.db.DB_HASH):
+        cursor.first()
+        while (i < DB_SIZE):
+            if (cursor.current()[0].decode(encoding='UTF-8') >= low) or (cursor.current()[0].decode(encoding='UTF-8') <= high):
+                list.append(cursor.current()[0])
+            cursor.next()
+            i+=1 
+    
+    # B-Tree & IndexedFile    
+    else:
+        list.append(cursor.set(low.encode(encoding='UTF-8'))[0])
+        while cursor.current()[0].decode(encoding='UTF-8') != high and i<15:
+            cursor.next()
+            list.append(cursor.current()[0])
+            i+=1
 
     print(list)
     db_1.close()
